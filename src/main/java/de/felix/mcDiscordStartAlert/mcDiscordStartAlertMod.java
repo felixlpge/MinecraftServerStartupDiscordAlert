@@ -5,19 +5,13 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 @Mod(modid = mcDiscordStartAlertMod.MODID, name = mcDiscordStartAlertMod.NAME, version = mcDiscordStartAlertMod.VERSION)
 public class mcDiscordStartAlertMod {
@@ -58,20 +52,28 @@ public class mcDiscordStartAlertMod {
     }
     @EventHandler
     public void stoped(FMLServerStoppingEvent event) throws IOException {
-        sendMessage(webhook, "Server stopping...");
+        sendMessage(webhook, "Stopping server...");
     }
 
     private void sendMessage(String webhookAPI, String message) throws IOException {
-        HttpClient httpclient = HttpClients.createDefault();
-        HttpPost httppost = new HttpPost(webhookAPI);
-
-        // Request parameters and other properties.
-        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-        params.add(new BasicNameValuePair("content", message));
-        httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-        HttpResponse response = httpclient.execute(httppost);
-        HttpEntity entity = response.getEntity();
+        URL url = new URL(webhookAPI);
+        URLConnection con = url.openConnection();
+        HttpsURLConnection http = (HttpsURLConnection)con;
+        http.setRequestMethod("POST");
+        http.setDoOutput(true);
+        String request = "content=" + message;
+        byte[] out = request.getBytes(StandardCharsets.UTF_8);
+        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        http.setRequestProperty("User-Agent", "Mozilla/4.76");
+        http.connect();
+        try(OutputStream os = http.getOutputStream()) {
+            os.write(out);
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null){
+            System.out.println(line);
+        }
     }
 
 }
