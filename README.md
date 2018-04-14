@@ -1,4 +1,5 @@
 # MinecraftServerStartupDiscordAlert
+[![Build Status](https://travis-ci.org/felixlpge/MinecraftServerStartupDiscordAlert.svg?branch=master)](https://travis-ci.org/felixlpge/MinecraftServerStartupDiscordAlert)<br>
 Information: This is a server only mod. This is not made for client.
 
 ## Why should I use Discord Start Alert?
