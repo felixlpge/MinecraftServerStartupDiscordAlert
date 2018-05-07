@@ -13,7 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 
-@Mod(modid = mcDiscordStartAlertMod.MODID, name = mcDiscordStartAlertMod.NAME, version = mcDiscordStartAlertMod.VERSION, serverSideOnly = true)
+@Mod(modid = mcDiscordStartAlertMod.MODID, name = mcDiscordStartAlertMod.NAME, version = mcDiscordStartAlertMod.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*")
 public class mcDiscordStartAlertMod {
     public static final String MODID = "discordmcalert";
     public static final String NAME = "MC Discord Start Alert";
